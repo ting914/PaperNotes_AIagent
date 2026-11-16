@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GEO: Generative Engine Optimization｜論文筆記站</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <div class="container">
+    <a class="back-link" href="../index.html">← 回首頁</a>
+
+    <article>
+      <!-- 基本資料卡 -->
+      <header class="info-card">
+        <h1 class="note-title">GEO: Generative Engine Optimization</h1>
+        <dl class="info-list">
+          <dt>作者</dt>
+          <dd>Aggarwal, P., Murahari, V., Rajpurohit, T., Kalyan, A., Narasimhan, K., &amp; Deshpande, A.</dd>
+          <dt>年份</dt>
+          <dd>2024</dd>
+          <dt>期刊／會議</dt>
+          <dd>Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD '24)</dd>
+          <dt>DOI</dt>
+          <dd><a href="https://doi.org/10.1145/3637528.3671900">10.1145/3637528.3671900</a></dd>
+        </dl>
+        <ul class="tag-list">
+          <li class="tag">GEO</li>
+          <li class="tag">SEO</li>
+          <li class="tag">生成式搜尋</li>
+        </ul>
+      </header>
+
+      <!-- 固定六段：順序與標題文字不可更改 -->
+      <section class="note-section">
+        <h2>研究問題</h2>
+        <p>BingChat、Google SGE、Perplexity.ai 這類「生成式引擎」（generative engine, GE）會先搜尋、再用 LLM 把多個來源整合成一段附引用的回答，使用者不必再點進網站。這對網站與內容創作者不利：流量可能下降，而且 GE 是黑盒子，創作者無從得知自己的內容何時、如何被呈現。傳統 SEO 以關鍵字與排名為核心，不一定適用於 GE。</p>
+        <p>本文要回答：</p>
+        <ol>
+          <li>在 GE 的回答中，一個來源網站的「可見度」該如何定義與衡量？</li>
+          <li><mark>內容創作者能否只修改自己的網頁內容，就提升在 GE 回答中的可見度？</mark>哪些策略有效？</li>
+          <li>策略的效果是否因查詢領域、網站原始排名而不同？</li>
+        </ol>
+      </section>
+
+      <section class="note-section">
+        <h2>理論與方法</h2>
+        <ul>
+          <li><strong>GE 的形式化</strong>：把 GE 定義為輸入使用者查詢（與個人化資訊）、輸出自然語言回答的函數，內部由一組生成模型（查詢改寫、摘要、回答生成）加上搜尋引擎組成 <span class="page-ref">（p. 7）</span>。</li>
+          <li><strong>可見度（impression）指標</strong> <span class="page-ref">（pp. 7–9）</span>：
+            <ul>
+              <li>Word Count：回答中引用該來源的句子字數占全部回答的比例。</li>
+              <li>Position-Adjusted Word Count：再依句子在回答中的位置做指數衰減加權，越前面權重越高。</li>
+              <li>Subjective Impression：用 G-Eval（GPT-3.5 依評分表打分）評估 7 個面向——與查詢的相關性、影響力、獨特性、主觀位置、主觀份量、被點擊可能性、內容多樣性。</li>
+            </ul>
+          </li>
+          <li><strong>9 種 GEO 方法</strong> <span class="page-ref">（p. 8）</span>：Authoritative（語氣更權威）、Statistics Addition（加入統計數據）、Keyword Stuffing（關鍵字堆砌，傳統 SEO 做法）、Cite Sources（加入可信來源引用）、Quotation Addition（加入引述）、Easy-to-Understand（簡化語言）、Fluency Optimization（提升流暢度）、Unique Words、Technical Terms。實作上用 LLM 依各方法改寫網頁內容。</li>
+          <li><strong>GEO-bench</strong> <span class="page-ref">（p. 9）</span>：10,000 筆查詢（train/validation/test = 8K/1K/1K），來源包含 MS MARCO、ORCAS-I、Natural Questions、AllSouls、LIMA、Davinci-Debate、Perplexity Discover、ELI5、GPT-4 生成查詢共 9 種；涵蓋 25 個領域，資訊型查詢 80%、交易型與導航型各 10%；每筆附 Google 前 5 名搜尋結果的文字內容。</li>
+          <li><strong>實驗設計</strong> <span class="page-ref">（pp. 9–10）</span>：自建兩步驟 GE（Google 前 5 個來源 + gpt-3.5-turbo 生成回答，temperature 0.7、每題抽 5 個回答）。每題隨機挑一個來源套用 GEO 方法，其餘來源不變，計算該來源可見度的相對提升百分比；以 5 個隨機種子取平均，在 test split 上評估。</li>
+          <li><strong>外部驗證</strong>：在實際上線的 Perplexity.ai 上重複實驗 <span class="page-ref">（pp. 12–13）</span>。</li>
+        </ul>
+      </section>
+
+      <section class="note-section">
+        <h2>主要發現</h2>
+        <ul>
+          <li><strong>加入可信度元素最有效</strong>：<mark>Quotation Addition、Statistics Addition、Cite Sources 在 Position-Adjusted Word Count 上相對提升約 30–40%</mark>，在 Subjective Impression 上約 15–30% <span class="page-ref">（p. 10）</span>；例如 Quotation Addition 的整體分數 27.2，基準為 19.3（Table 1）。</li>
+          <li><strong>傳統 SEO 的關鍵字堆砌無效</strong>：Keyword Stuffing 分數（17.7）甚至低於未優化（19.3） <span class="page-ref">（p. 10）</span>；在 Perplexity.ai 上比基準差約 10% <span class="page-ref">（p. 13）</span>。單純把語氣改得更權威（Authoritative）整體也沒有顯著提升 <span class="page-ref">（p. 11）</span>。</li>
+          <li><strong>呈現方式也重要</strong>：Fluency Optimization、Easy-to-Understand 這類只改寫風格、不加新資訊的方法，也帶來約 15–30% 的提升 <span class="page-ref">（p. 10）</span>。</li>
+          <li><strong>對原本排名低的網站幫助最大</strong>：當所有來源都做 GEO 時，<mark>Cite Sources 讓搜尋排名第 5 的網站可見度提升 115.1%，排名第 1 的反而下降 30.3%</mark>（Table 2） <span class="page-ref">（pp. 11–12）</span>。</li>
+          <li><strong>效果因領域而異、組合使用更好</strong>：例如 Statistics Addition 在「法律與政府」、「意見」類查詢最有效，Quotation Addition 在「人物與社會」、「歷史」最有效（Table 3） <span class="page-ref">（p. 11）</span>；Fluency Optimization + Statistics Addition 的組合表現最好，比最佳單一方法高出 5.5% 以上 <span class="page-ref">（p. 12）</span>。在 Perplexity.ai 上，Quotation Addition 的 Position-Adjusted Word Count 提升約 22%，Statistics Addition 的 Subjective Impression 提升約 37% <span class="page-ref">（p. 13）</span>。</li>
+        </ul>
+      </section>
+
+      <section class="note-section">
+        <h2>研究限制</h2>
+        <p>作者自述 <span class="page-ref">（p. 13）</span>：</p>
+        <ul>
+          <li>GE 會持續演進，GEO 方法也需要跟著調整，就像 SEO 一樣。</li>
+          <li>真實查詢的型態會隨時間改變，GEO-bench 需要持續更新。</li>
+          <li>沒有評估 GEO 修改對傳統搜尋排名的影響。</li>
+          <li>查詢的類別標籤由 GPT-4 標註再人工檢查，仍可能有主觀判斷或標註錯誤。</li>
+        </ul>
+        <p>我觀察到的：</p>
+        <ul>
+          <li>主要實驗的 GE 是自建的（gpt-3.5-turbo + 前 5 個來源），與商用 GE 的實際架構可能差距很大；外部驗證只做了 Perplexity.ai 一個平台。</li>
+          <li>Subjective Impression 由 GPT-3.5 評分（LLM 當評審），再標準化到與 Position-Adjusted Word Count 相同的平均與變異數，可能帶有 LLM 本身的偏誤。</li>
+          <li>策略組合分析因成本只用了 200 筆樣本 <span class="page-ref">（p. 12 註腳）</span>。</li>
+          <li><mark>只衡量「在 AI 回答中的曝光」，沒有衡量使用者是否因此點擊、信任或購買。</mark></li>
+          <li>由 LLM 自動「加入統計數據、引述」可能產生不實內容，文中沒有討論內容真實性與倫理問題。</li>
+          <li>交易型查詢只占 10%，沒有專門針對電商商品頁的分析。</li>
+        </ul>
+      </section>
+
+      <section class="note-section">
+        <h2>可引用重點</h2>
+        <ul>
+          <li>生成式引擎直接給出整合後的答案，使用者不必進入原網站，可能使網站的自然流量下降，對依賴線上曝光的中小企業與個人創作者造成衝擊。<span class="page-ref">（p. 5）</span></li>
+          <li>傳統搜尋引擎以「排名」衡量可見度，但生成式引擎把多個來源交織在同一段回答中，來源的可見度取決於被引用的篇幅、位置與呈現方式，因此需要多面向的新指標。<span class="page-ref">（pp. 6–7）</span></li>
+          <li>傳統 SEO 常用的關鍵字堆砌在生成式引擎中幾乎沒有效果，甚至會降低可見度，顯示 SEO 策略不能直接移植到 AI 搜尋情境。<span class="page-ref">（pp. 11, 13）</span></li>
+          <li><mark>在內容中加入可信來源的引用、引述與具體統計數據，是提升生成式引擎可見度最有效的策略</mark>，可見度相對提升可達約 40%。<span class="page-ref">（p. 10）</span></li>
+          <li>GEO 對原本搜尋排名較低的網站幫助更大，作者認為這可能讓小型創作者與獨立商家有機會與大企業競爭曝光。<span class="page-ref">（p. 12）</span></li>
+          <li>不同領域適合的優化策略不同，內容優化應依目標領域調整。<span class="page-ref">（p. 11）</span></li>
+        </ul>
+        <p class="page-ref">頁碼採 KDD '24 論文集頁碼（PDF 頁尾數字，pp. 5–16）。</p>
+      </section>
+
+      <section class="note-section">
+        <h2>對我論文的啟發</h2>
+        <p class="ai-draft-label">（AI 草擬，待確認）</p>
+        <ul>
+          <li><strong>可借用的依變數</strong>：「品牌／商品在 AI 回答中的可見度」可作為電商 × AI 研究的新結果變數，直接借用本文的 Position-Adjusted Word Count 與 Subjective Impression 定義來操作化。</li>
+          <li><strong>可對應到電商內容的自變數</strong>：商品頁加入具體規格數據或銷售／評價統計（對應 Statistics Addition）、第三方評測或權威來源（Cite Sources）、顧客評論引述（Quotation Addition），檢驗哪些元素會讓商品更常被 AI 購物助理推薦。</li>
+          <li><strong>研究缺口</strong>：<mark>GEO-bench 以資訊型查詢為主，交易型查詢只占 10%，購物情境尚未被系統性研究</mark>（如「推薦 3000 元以下的降噪耳機」），可作為我論文的切入點。</li>
+          <li><strong>可借用的實驗設計</strong>：只修改一個來源、其他來源不變的控制方式；多次抽樣（temperature 0.7、5 次）降低生成隨機性；以相對提升百分比比較策略效果。</li>
+          <li><strong>可延伸到消費者端</strong>：本文只測曝光，未測使用者反應；可結合 TAM 或信任相關理論，探討「被 AI 推薦」是否進一步影響消費者的信任與購買意圖。</li>
+        </ul>
+      </section>
+    </article>
+
+    <footer class="site-footer">
+      <p>筆記建立日期：2026-11-16</p>
+    </footer>
+  </div>
+  <script src="../assets/note.js"></script>
+</body>
+</html>

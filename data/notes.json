@@ -1,0 +1,13 @@
+[
+  {
+    "slug": "aggarwal-2024-geo",
+    "title": "GEO: Generative Engine Optimization",
+    "authors": "Aggarwal, P., Murahari, V., Rajpurohit, T., Kalyan, A., Narasimhan, K., & Deshpande, A.",
+    "year": 2024,
+    "venue": "Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD '24)",
+    "doi": "10.1145/3637528.3671900",
+    "tags": ["GEO", "SEO", "生成式搜尋"],
+    "summary": "提出GEO框架，證實加入引述與統計可使內容在生成式搜尋中可見度提升達40%。",
+    "added": "2026-11-16"
+  }
+]
