@@ -152,7 +152,11 @@
       return res.json();
     })
     .then(function (notes) {
-      notes.sort(function (a, b) { return String(b.added).localeCompare(String(a.added)); });
+      // 新增日期新→舊；同一天時，notes.json 中越後面的越新
+      var order = notes.slice();
+      notes.sort(function (a, b) {
+        return String(b.added).localeCompare(String(a.added)) || order.indexOf(b) - order.indexOf(a);
+      });
       notesList.innerHTML = notes.map(function (note) {
         var year = note.year == null ? "待補" : note.year;
         var label = escapeHtml(note.title) + '<span class="drawer-note-meta">' +

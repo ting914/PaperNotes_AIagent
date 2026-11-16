@@ -81,13 +81,18 @@
         return parts.length > 2 ? name + " 等" : name;
       }
 
+      // 新增日期新→舊；同一天時，notes.json 中越後面的越新
+      function newerFirst(a, b) {
+        return String(b.added).localeCompare(String(a.added)) || notes.indexOf(b) - notes.indexOf(a);
+      }
+
       function compare(a, b) {
         var ya = a.year == null ? -Infinity : a.year;
         var yb = b.year == null ? -Infinity : b.year;
-        if (state.sort === "year-desc") return yb - ya || String(b.added).localeCompare(String(a.added));
-        if (state.sort === "year-asc") return ya - yb || String(b.added).localeCompare(String(a.added));
+        if (state.sort === "year-desc") return yb - ya || newerFirst(a, b);
+        if (state.sort === "year-asc") return ya - yb || newerFirst(a, b);
         if (state.sort === "title") return String(a.title).localeCompare(String(b.title));
-        return String(b.added).localeCompare(String(a.added));
+        return newerFirst(a, b);
       }
 
       function matches(note) {
