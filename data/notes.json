@@ -20,5 +20,16 @@
     "tags": ["GEO", "電商", "生成式搜尋"],
     "summary": "建立電商GEO資料集，發現提示詞優化會收斂出跨AI引擎通用的商品描述改寫策略。",
     "added": "2026-11-16"
+  },
+  {
+    "slug": "brown-2026-misq-evolution",
+    "title": "The Evolution of Research in MIS Quarterly Over Five Decades",
+    "authors": "Brown, S.",
+    "year": 2026,
+    "venue": "MIS Quarterly, 50(2), iii–xi（Editor's Comments）",
+    "doi": "待補",
+    "tags": ["研究趨勢", "資訊管理", "人工智慧"],
+    "summary": "以AI分析MISQ五十年1,963篇論文，歸納研究主題與方法的演變趨勢。",
+    "added": "2026-11-16"
   }
 ]
