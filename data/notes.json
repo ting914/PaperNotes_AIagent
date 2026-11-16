@@ -9,5 +9,16 @@
     "tags": ["GEO", "SEO", "生成式搜尋"],
     "summary": "提出GEO框架，證實加入引述與統計可使內容在生成式搜尋中可見度提升達40%。",
     "added": "2026-11-16"
+  },
+  {
+    "slug": "bagga-2025-egeo",
+    "title": "E-GEO: A Testbed for Generative Engine Optimization in E-Commerce",
+    "authors": "Bagga, P. S., Farias, V. F., Korkotashvili, T., Peng, T., & Wu, Y.",
+    "year": 2025,
+    "venue": "arXiv preprint (arXiv:2511.20867v2 [cs.IR])",
+    "doi": "10.48550/arXiv.2511.20867",
+    "tags": ["GEO", "電商", "生成式搜尋"],
+    "summary": "建立電商GEO資料集，發現提示詞優化會收斂出跨AI引擎通用的商品描述改寫策略。",
+    "added": "2026-11-16"
   }
 ]
