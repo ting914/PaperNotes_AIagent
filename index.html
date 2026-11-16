@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>論文筆記站</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="site-header">
+      <h1 class="site-title">論文筆記站</h1>
+      <p class="site-intro">碩士論文文獻回顧筆記，一篇論文一頁，方便日後回查、比較與引用。</p>
+    </header>
+
+    <div class="toolbar">
+      <input class="search-input" id="search-input" type="search" placeholder="搜尋標題、作者、期刊、摘要、標籤…" aria-label="搜尋筆記">
+      <label class="sort-label">排序
+        <select class="sort-select" id="sort-select">
+          <option value="added">新增日期（新→舊）</option>
+          <option value="year-desc">出版年份（新→舊）</option>
+          <option value="year-asc">出版年份（舊→新）</option>
+          <option value="title">標題（A→Z）</option>
+        </select>
+      </label>
+    </div>
+
+    <nav class="filter-bar" id="filter-bar" aria-label="標籤篩選"></nav>
+
+    <main>
+      <ul class="note-list" id="note-list">
+        <li class="empty-message">筆記載入中……</li>
+      </ul>
+    </main>
+
+    <footer class="site-footer">
+      <p id="note-count"></p>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      var listEl = document.getElementById("note-list");
+      var filterEl = document.getElementById("filter-bar");
+      var countEl = document.getElementById("note-count");
+      var searchEl = document.getElementById("search-input");
+      var sortEl = document.getElementById("sort-select");
+      var STORE_KEY = "paper-notes-home";
+      var notes = [];
+      var state = loadState();
+
+      searchEl.value = state.query;
+      sortEl.value = state.sort;
+
+      function loadState() {
+        var fallback = { query: "", tag: "全部", sort: "added" };
+        try {
+          var saved = JSON.parse(sessionStorage.getItem(STORE_KEY));
+          return saved ? Object.assign(fallback, saved) : fallback;
+        } catch (e) {
+          return fallback;
+        }
+      }
+
+      function saveState() {
+        try { sessionStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+      }
+
+      function escapeHtml(value) {
+        return String(value == null ? "" : value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function firstAuthor(authors) {
+        var parts = String(authors || "待補").split(",");
+        var name = parts[0].trim();
+        return parts.length > 2 ? name + " 等" : name;
+      }
+
+      function compare(a, b) {
+        var ya = a.year == null ? -Infinity : a.year;
+        var yb = b.year == null ? -Infinity : b.year;
+        if (state.sort === "year-desc") return yb - ya || String(b.added).localeCompare(String(a.added));
+        if (state.sort === "year-asc") return ya - yb || String(b.added).localeCompare(String(a.added));
+        if (state.sort === "title") return String(a.title).localeCompare(String(b.title));
+        return String(b.added).localeCompare(String(a.added));
+      }
+
+      function matches(note) {
+        if (state.tag !== "全部" && (note.tags || []).indexOf(state.tag) === -1) return false;
+        var q = state.query.trim().toLowerCase();
+        if (!q) return true;
+        var haystack = [note.title, note.authors, note.year, note.venue, note.summary, (note.tags || []).join(" ")]
+          .join(" ").toLowerCase();
+        return q.split(/\s+/).every(function (word) { return haystack.indexOf(word) !== -1; });
+      }
+
+      function renderFilters() {
+        var tags = [];
+        notes.forEach(function (note) {
+          (note.tags || []).forEach(function (tag) {
+            if (tags.indexOf(tag) === -1) tags.push(tag);
+          });
+        });
+        if (state.tag !== "全部" && tags.indexOf(state.tag) === -1) state.tag = "全部";
+        filterEl.innerHTML = "";
+        ["全部"].concat(tags).forEach(function (tag) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "filter-btn" + (tag === state.tag ? " is-active" : "");
+          btn.setAttribute("aria-pressed", tag === state.tag ? "true" : "false");
+          btn.textContent = tag;
+          btn.addEventListener("click", function () {
+            state.tag = tag;
+            saveState();
+            renderFilters();
+            renderNotes();
+          });
+          filterEl.appendChild(btn);
+        });
+      }
+
+      function renderNotes() {
+        var shown = notes.filter(matches).sort(compare);
+        countEl.textContent = "共 " + notes.length + " 篇筆記（目前顯示 " + shown.length + " 篇）";
+        if (shown.length === 0) {
+          listEl.innerHTML = '<li class="empty-message">' +
+            (notes.length === 0 ? "目前沒有筆記。" : "找不到符合條件的筆記。") + "</li>";
+          return;
+        }
+        listEl.innerHTML = shown.map(function (note, i) {
+          var year = note.year == null ? "待補" : note.year;
+          var href = "notes/" + encodeURIComponent(note.slug) + ".html";
+          var detailId = "detail-" + i;
+          return (
+            '<li class="note-row">' +
+              '<div class="note-row-main">' +
+                '<span class="note-year">' + escapeHtml(year) + "</span>" +
+                '<span class="note-author">' + escapeHtml(firstAuthor(note.authors)) + "</span>" +
+                '<a class="note-title-link" href="' + href + '" title="' + escapeHtml(note.title) + '">' + escapeHtml(note.title) + "</a>" +
+                '<span class="note-row-tags">' + escapeHtml((note.tags || []).join("・")) + "</span>" +
+                '<button type="button" class="note-row-toggle" aria-expanded="false" aria-controls="' + detailId + '">摘要</button>' +
+              "</div>" +
+              '<div class="note-row-detail" id="' + detailId + '" hidden>' +
+                "<p>" + escapeHtml(note.summary) + "</p>" +
+                '<p class="note-detail-meta">' + escapeHtml(note.authors) + "（" + escapeHtml(year) + "）．" + escapeHtml(note.venue) + "</p>" +
+                '<a href="' + href + '">閱讀筆記 →</a>' +
+              "</div>" +
+            "</li>"
+          );
+        }).join("");
+      }
+
+      // 點整列（標題連結以外）即可展開／收合摘要
+      listEl.addEventListener("click", function (e) {
+        if (e.target.closest("a")) return;
+        var main = e.target.closest(".note-row-main");
+        if (!main) return;
+        var btn = main.querySelector(".note-row-toggle");
+        var detail = document.getElementById(btn.getAttribute("aria-controls"));
+        var open = btn.getAttribute("aria-expanded") === "true";
+        btn.setAttribute("aria-expanded", open ? "false" : "true");
+        btn.textContent = open ? "摘要" : "收合";
+        detail.hidden = open;
+      });
+
+      searchEl.addEventListener("input", function () {
+        state.query = searchEl.value;
+        saveState();
+        renderNotes();
+      });
+
+      sortEl.addEventListener("change", function () {
+        state.sort = sortEl.value;
+        saveState();
+        renderNotes();
+      });
+
+      fetch("data/notes.json")
+        .then(function (res) {
+          if (!res.ok) throw new Error(res.status);
+          return res.json();
+        })
+        .then(function (data) {
+          notes = data;
+          renderFilters();
+          renderNotes();
+        })
+        .catch(function () {
+          listEl.innerHTML = '<li class="empty-message">無法讀取 data/notes.json。請用本機伺服器預覽（python3 -m http.server 8000）。</li>';
+        });
+    })();
+  </script>
+</body>
+</html>

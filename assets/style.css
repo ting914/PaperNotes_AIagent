@@ -1,0 +1,606 @@
+/* 論文筆記站 — 全站樣式（森林綠）
+   所有顏色只在 :root 定義，其他地方一律使用變數。 */
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap");
+
+:root {
+  --bg: #F5F7F2;        /* 頁面背景（淺綠灰） */
+  --text: #1E2B24;      /* 內文文字（墨黑綠） */
+  --accent: #2F6B4F;    /* 標題裝飾、連結、標籤、按鈕（森林綠） */
+  --highlight: #DCEBD8; /* 螢光標示，只用在關鍵句 */
+  --card: #FFFFFF;      /* 卡片背景 */
+  --muted: #5F6F66;     /* 次要文字（日期、期刊名） */
+  --border: #CFE0CB;    /* 卡片細邊框（淡綠） */
+  --overlay: rgba(30, 43, 36, 0.35); /* 抽屜開啟時的遮罩（--text 半透明） */
+
+  --font-serif: "Noto Serif TC", "Songti TC", serif;
+  --font-sans: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --radius: 12px;
+  --content-width: 760px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.container {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 32px 16px 48px;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-serif);
+  line-height: 1.4;
+  color: var(--text);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+mark {
+  background: var(--highlight);
+  color: inherit;
+  padding: 0 2px;
+  border-radius: 3px;
+}
+
+/* ---------- 頁首／頁尾 ---------- */
+
+.site-header {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--accent);
+}
+
+.site-title {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.site-intro {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+
+.site-footer {
+  margin-top: 40px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* ---------- 標籤 ---------- */
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tag {
+  display: inline-block;
+  padding: 0 10px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  color: var(--accent);
+  font-size: 0.85rem;
+  line-height: 1.8;
+}
+
+/* ---------- 首頁：篩選列 ---------- */
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.filter-btn {
+  padding: 2px 14px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--accent);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.filter-btn.is-active {
+  background: var(--accent);
+  color: var(--card);
+}
+
+/* ---------- 首頁：搜尋與排序 ---------- */
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.search-input {
+  flex: 1 1 240px;
+  min-width: 0;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+}
+
+.search-input:focus,
+.sort-select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.sort-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.sort-select {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.9rem;
+}
+
+/* ---------- 首頁：精簡列表 ---------- */
+
+.note-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.note-row {
+  border-bottom: 1px solid var(--border);
+}
+
+.note-row:last-child {
+  border-bottom: 0;
+}
+
+.note-row-main {
+  display: grid;
+  grid-template-columns: 3.2em 7em minmax(0, 1fr) auto auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+.note-row-main:hover {
+  background: var(--bg);
+}
+
+.note-year {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.note-author {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.9rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.note-title-link {
+  overflow: hidden;
+  font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-decoration: none;
+}
+
+.note-title-link:hover {
+  text-decoration: underline;
+}
+
+.note-row-tags {
+  max-width: 12em;
+  overflow: hidden;
+  color: var(--accent);
+  font-size: 0.8rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.note-row-toggle {
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.note-row-toggle[aria-expanded="true"] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.note-row-detail {
+  padding: 4px 16px 14px calc(16px + 3.2em + 12px);
+}
+
+.note-row-detail[hidden] {
+  display: none;
+}
+
+.note-row-detail p {
+  margin: 0 0 6px;
+}
+
+.note-row-detail .tag-list {
+  margin: 8px 0;
+}
+
+.note-detail-meta {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.empty-message {
+  margin: 0;
+  padding: 16px;
+  color: var(--muted);
+}
+
+/* ---------- 筆記頁 ---------- */
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 16px;
+}
+
+.info-card {
+  padding: 24px 20px;
+  margin-bottom: 32px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.info-card .note-title {
+  margin: 0 0 16px;
+  font-size: 1.5rem;
+}
+
+.info-list {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 16px;
+  margin: 0 0 16px;
+}
+
+.info-list dt {
+  color: var(--muted);
+}
+
+.info-list dd {
+  margin: 0;
+}
+
+.note-section {
+  margin-bottom: 32px;
+}
+
+.note-section h2 {
+  margin: 0 0 8px;
+  padding-left: 12px;
+  border-left: 4px solid var(--accent);
+  font-size: 1.3rem;
+}
+
+.note-section p {
+  margin: 0 0 12px;
+}
+
+.note-section ul,
+.note-section ol {
+  margin: 0 0 12px;
+  padding-left: 1.4em;
+}
+
+.note-section li {
+  margin-bottom: 6px;
+}
+
+.page-ref {
+  color: var(--muted);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.ai-draft-label {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* ---------- 筆記頁：側邊抽屜選單 ---------- */
+
+.drawer-toggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 14px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--accent);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.drawer-toggle-icon,
+.drawer-toggle-icon::before,
+.drawer-toggle-icon::after {
+  display: block;
+  width: 14px;
+  height: 2px;
+  background: var(--accent);
+}
+
+.drawer-toggle-icon {
+  position: relative;
+}
+
+.drawer-toggle-icon::before,
+.drawer-toggle-icon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+}
+
+.drawer-toggle-icon::before {
+  top: -5px;
+}
+
+.drawer-toggle-icon::after {
+  top: 5px;
+}
+
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: var(--overlay);
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 30;
+  width: min(320px, 85vw);
+  padding: 16px 20px 32px;
+  overflow-y: auto;
+  background: var(--bg);
+  border-left: 1px solid var(--border);
+  /* 全站唯一的動畫：抽屜從右側滑入（使用者指定） */
+  visibility: hidden;
+  transform: translateX(100%);
+  transition: transform 0.25s ease, visibility 0s linear 0.25s;
+}
+
+.drawer.is-open {
+  visibility: visible;
+  transform: translateX(0);
+  transition: transform 0.25s ease, visibility 0s linear 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer,
+  .drawer.is-open {
+    transition: none;
+  }
+}
+
+.drawer-overlay[hidden] {
+  display: none;
+}
+
+body.drawer-open {
+  overflow: hidden;
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 2px solid var(--accent);
+}
+
+.drawer-title {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.drawer-close {
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.drawer-home {
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+.drawer-heading {
+  margin: 16px 0 4px;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.drawer-list {
+  margin: 0;
+  padding-left: 1.4em;
+}
+
+.drawer-notes {
+  padding-left: 0;
+  list-style: none;
+}
+
+.drawer-list li {
+  margin-bottom: 4px;
+}
+
+.drawer-notes li {
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.drawer-list a {
+  text-decoration: none;
+}
+
+.drawer-list a:hover {
+  text-decoration: underline;
+}
+
+.drawer-current {
+  display: block;
+  padding-left: 8px;
+  border-left: 3px solid var(--accent);
+  font-weight: 500;
+}
+
+.drawer-note-meta {
+  display: block;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+
+.drawer-muted {
+  color: var(--muted);
+}
+
+.note-section {
+  scroll-margin-top: 64px;
+}
+
+/* ---------- 手機 ---------- */
+
+@media (max-width: 480px) {
+  .container {
+    padding-top: 24px;
+  }
+
+  .site-title {
+    font-size: 1.6rem;
+  }
+
+  .info-card .note-title {
+    font-size: 1.3rem;
+  }
+
+  .info-list {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .info-list dd {
+    margin-bottom: 8px;
+  }
+}
+
+@media (max-width: 640px) {
+  .note-row-main {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "year author toggle"
+      "title title title"
+      "tags tags tags";
+    gap: 2px 10px;
+    padding: 12px 14px;
+  }
+
+  .note-year { grid-area: year; }
+  .note-author { grid-area: author; }
+  .note-row-toggle { grid-area: toggle; }
+
+  .note-title-link {
+    grid-area: title;
+    white-space: normal;
+  }
+
+  .note-row-tags {
+    grid-area: tags;
+    max-width: none;
+  }
+
+  .note-row-detail {
+    padding: 0 14px 14px;
+  }
+}

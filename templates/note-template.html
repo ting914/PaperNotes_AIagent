@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{TITLE}}｜論文筆記站</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <div class="container">
+    <a class="back-link" href="../index.html">← 回首頁</a>
+
+    <article>
+      <!-- 基本資料卡 -->
+      <header class="info-card">
+        <h1 class="note-title">{{TITLE}}</h1>
+        <dl class="info-list">
+          <dt>作者</dt>
+          <dd>{{AUTHORS}}</dd>
+          <dt>年份</dt>
+          <dd>{{YEAR}}</dd>
+          <dt>期刊／會議</dt>
+          <dd>{{VENUE}}</dd>
+          <dt>DOI</dt>
+          <dd><a href="https://doi.org/{{DOI}}">{{DOI}}</a></dd>
+        </dl>
+        <ul class="tag-list">
+          <li class="tag">{{TAG}}</li>
+        </ul>
+      </header>
+
+      <!-- 固定六段：順序與標題文字不可更改 -->
+      <section class="note-section">
+        <h2>研究問題</h2>
+        <p>{{研究問題}}</p>
+      </section>
+
+      <section class="note-section">
+        <h2>理論與方法</h2>
+        <p>{{理論與方法}}</p>
+      </section>
+
+      <section class="note-section">
+        <h2>主要發現</h2>
+        <ul>
+          <li>{{主要發現}}</li>
+        </ul>
+      </section>
+
+      <section class="note-section">
+        <h2>研究限制</h2>
+        <p>{{研究限制}}</p>
+      </section>
+
+      <section class="note-section">
+        <h2>可引用重點</h2>
+        <ul>
+          <li>{{可引用重點}} <span class="page-ref">（p. 待補）</span></li>
+        </ul>
+      </section>
+
+      <section class="note-section">
+        <h2>對我論文的啟發</h2>
+        <p>{{對我論文的啟發}}</p>
+      </section>
+    </article>
+
+    <footer class="site-footer">
+      <p>筆記建立日期：{{ADDED}}</p>
+    </footer>
+  </div>
+  <script src="../assets/note.js"></script>
+</body>
+</html>
